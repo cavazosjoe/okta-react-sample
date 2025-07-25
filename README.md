@@ -18,19 +18,6 @@ Before you begin, you’ll need an Okta Integrator Free Plan account. To get one
 8. In the **Controlled access** section, select the appropriate access level
 9. Click **Save**
 
-### Where are my new app's credentials?
-
-Creating an OIDC Single-Page App manually in the Admin Console configures your Okta Org with the application settings. You may also need to configure trusted origins for `http://localhost:3000` in **Security > API > Trusted Origins**.
-
-After creating the app, you can find the configuration details on the app’s **General** tab:
-- **Client ID**: Found in the **Client Credentials** section
-- **Issuer**: Found in the **Issuer URI** field for the authorization server that appears by selecting **Security > API** from the navigation pane.
-
-```text
-Issuer:    https://dev-133337.okta.com
-Client ID: 0oab8eb55Kb9jdMIr5d6
-```
-
 ## Configure Okta resources
 
 **Enable Refresh Tokens**
@@ -39,13 +26,47 @@ Sign into your [Okta Developer Edition account](https://developer.okta.com/login
 
 **Verify Authorization Server**
 
-This repo calls a custom resource server to demonstrate making a protected resource request using an access token. Ensure that your default custom authorization server has an access policy. Add an access policy if it's not there. See [Create access polices](https://help.okta.com/okta_help.htm?type=oie&id=ext-create-access-policies).
+When using a custom authorization server, you need to set up authorization policies. Complete these additional steps:
+
+1. In the Admin Console, go to **Security > API > Authorization Servers**
+2. Select your custom authorization server (`default`)
+3. On the **Access Policies** tab, ensure you have at least one policy:
+    - If no policies exist, click **Add New Access Policy**
+    - Give it a name like “Default Policy”
+    - Set **Assign to** to “All clients”
+    - Click **Create Policy**
+4. For your policy, ensure you have at least one rule:
+    - Click **Add Rule** if no rules exist
+    - Give it a name like “Default Rule”
+    - Set **Grant type** is to “Authorization Code”
+    - Set **User** is to “Any user assigned the app”
+    - Set **Scopes requested** to “Any scopes”
+    - Click **Create Rule**
+
+For more details, see the [Custom Authorization Server documentation](https://developer.okta.com/docs/concepts/auth-servers/#custom-authorization-server).
 
 ## Get the Code
 
-Grab and configure this project using `okta start react`.
+```bash
+git clone https://github.com/okta-samples/okta-react-sample.git
+cd okta-react-sample
+```
 
-Follow the instructions printed to the console.
+Update your `.okta.env` file with the values from your application's configuration:
+
+```text
+ISSUER=https://dev-133337.okta.com
+CLIENT_ID=0oab8eb55Kb9jdMIr5d6
+```
+
+### Where are my new app's credentials?
+
+Creating an OIDC Single-Page App manually in the Admin Console configures your Okta Org with the application settings. You may also need to configure trusted origins for `http://localhost:3000` in **Security > API > Trusted Origins**.
+
+After creating the app, you can find the configuration details on the app’s **General** tab:
+- **Client ID**: Found in the **Client Credentials** section
+- **Issuer**: Found in the **Issuer URI** field for the authorization server that appears by selecting **Security > API** from the navigation pane.
+
 
 ## Run the Example
 
